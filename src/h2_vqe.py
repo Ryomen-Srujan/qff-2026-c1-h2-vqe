@@ -1,6 +1,7 @@
 ﻿import csv
 import json
 from pathlib import Path
+from unittest import result
 
 import numpy as np
 import matplotlib
@@ -80,7 +81,7 @@ def main():
         objective,
         initial,
         method="COBYLA",
-        options={"maxiter": 500, "rhobeg": 0.5},
+        options={"maxiter": 2000, "rhobeg": 0.5},
     )
 
     exact_energy = float(np.linalg.eigvalsh(H2.to_matrix()).min())
@@ -92,7 +93,9 @@ def main():
     print(f"VQE energy:                 {optimized_energy:.10f} Ha")
     print(f"Absolute energy error:      {abs(optimized_energy-exact_energy):.10f} Ha")
     print(f"Optimizer success flag:     {result.success}")
-    print(f"Objective evaluations:      {len(history)}")
+    print(f"Optimizer message:          {result.message}")
+    print(f"Optimizer evaluations:      {result.nfev}")
+    print(f"Recorded evaluations:       {len(history)}")
 
     with (TABLES / "h2_convergence.csv").open(
         "w", newline="", encoding="utf-8"

@@ -51,16 +51,13 @@ The energy optimization and architecture smoke test are separate parts of the cu
 
 ## 5. Preliminary VQE Results
 
-The current script reported the following results:
-
-| Metric | Reported value |
-|---|---:|
-| Initial energy | −1.0973424854 Hartree |
-| Final VQE energy | −1.8572688581 Hartree |
-| Script-reported absolute energy error | 0.0000061721 Hartree |
-| Objective evaluations | 500 |
-| Range across final 10 evaluations | Approximately 9.23 × 10⁻⁸ Hartree |
-
+- Final VQE energy: -1.8572731802 Hartree
+- Exact matrix ground energy: -1.8572750302 Hartree
+- Absolute energy error: 0.0000018500 Hartree
+- Optimizer success: True
+- Optimizer evaluations: 1201
+- Maximum allowed evaluations: 2000
+- Optimizer termination: Trust-region radius reached its lower bound
 ### Interpretation
 
 The reported final energy is lower than the initial energy, indicating that the optimization process reduced the objective value during the experiment.
