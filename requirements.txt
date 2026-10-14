@@ -1,0 +1,11 @@
+qiskit>=1.2
+qiskit-nature>=0.7
+qiskit-algorithms>=0.3
+qiskit-aer>=0.14
+pyscf>=2.6
+numpy>=1.24
+scipy>=1.11
+matplotlib>=3.8
+networkx>=3.1
+pandas>=2.1
+jupyter

@@ -1,0 +1,21 @@
+# Virtual environment (do NOT push this - it is huge)
+.venv/
+env/
+venv/
+ENV/
+
+# Python cache & compiled bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook autosave checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Editor / OS junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
