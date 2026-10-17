@@ -5,11 +5,15 @@ from qiskit_aer.noise import NoiseModel, depolarizing_error, ReadoutError
 
 
 def load_coupling_map(json_path: str):
-    """Return (CouplingMap, config_dict)."""
-    with open(json_path) as f:
-        cfg = json.load(f)
-    return CouplingMap(cfg["coupling_map"]), cfg
+    from pathlib import Path
+    import json
+    from qiskit.transpiler import CouplingMap
 
+    path = Path(json_path)
+    with path.open("r", encoding="utf-8-sig") as f:
+        cfg = json.load(f)
+
+    return CouplingMap(cfg["coupling_map"]), cfg
 
 def build_noise_model(
     sq_depolarizing: float = 0.001,

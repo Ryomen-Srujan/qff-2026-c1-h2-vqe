@@ -1,49 +1,95 @@
-# C1: H₂ Molecular Ground-State Energy (VQE) — Qiskit Fall Fest 2026
+# C1: H₂ Ground-State Energy — Architecture Analysis Report
 
-## Problem Statement
-**Track:** Quantum Chemistry (VQE / Ab-Initio)  
-**Statement:** C1 — Compute the ground-state electronic energy of molecular Hydrogen ($H_2$) at equilibrium ($R = 0.74\text{ \AA}$) using VQE and evaluate architectural trade-offs across controlled hardware topologies.
+**Team:** StrawHats
+**Problem:** C1 — Quantum Chemistry Track
+**Date:** October 2026
 
----
+## 1. Objective and method
 
-## Benchmark Results
+We investigate the H₂ ground-state energy near its equilibrium bond length (R = 0.74 Å) using a STO-3G model and a Variational Quantum Eigensolver (VQE). The notebook records the Hamiltonian construction, VQE ansatz, ideal baseline, processor simulations, and architecture/resource comparison.
 
-| Architecture | Qubits | Transpiled CX | Depth | Ground Energy (Ha) | Energy Error (mHa) | Chemical Accuracy (<1.6 mHa) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Exact (FCI)** | — | — | — | **-1.852388** | **0.0000** | Exact Reference |
-| **Ideal (Statevector)** | 4 | 18 | 21 | **-1.851967** | **0.4212** | **✓ YES** |
-| **Processor A (5Q Chain)** | 5 | 36 | 76 | **-1.663166** | **189.2219** | ✗ No |
-| **Processor B (9Q Sparse)** | 9 | 30 | 58 | **-1.686839** | **165.5491** | ✗ No |
-| **Processor D (Custom 4Q)** | 4 | 18 | 33 | **-1.781241** | **71.1467** | ✗ No (62.4% better than A) |
+Recorded environment: Python 3.14.8, Qiskit 2.5.2, Qiskit Nature 0.8.0, Qiskit Aer 0.17.2, Qiskit Algorithms 0.4.0, and PySCF 2.14.0 (as recorded in the original run). The recorded simulation settings include an EfficientSU2 ansatz with full entanglement and 3 repetitions, COBYLA optimization, optimization level 1, SABRE layout/routing, seed 42, and 4096 shots for noisy simulations. Noise settings recorded for A/B are single-qubit depolarizing probability 0.001, CX depolarizing probability 0.005, and readout bit-flip probability 0.01.
 
----
+The saved notebook reports a lowest mapped-Hamiltonian eigenvalue of -1.85238817 Ha. Before treating this as the physical total molecular energy, confirm the energy convention: electronic energy and total energy including nuclear repulsion are not interchangeable. The VQE and reference values must use the same convention.
 
-## Key Findings
-1. **Algorithmic Accuracy:** Our multi-restart VQE achieves **$0.4212\text{ mHa}$ error** in ideal simulation, comfortably surpassing the $1.6\text{ mHa}$ chemical accuracy threshold.
-2. **Routing Bottleneck:** On 1D chain hardware (Processor A), SWAP routing causes a **$2\times$ inflation in CX gate count** (18 $\rightarrow$ 36), resulting in severe noise accumulation ($189.22\text{ mHa}$ error).
-3. **Co-Design Innovation (Processor D):** Our custom 4-qubit all-to-all topology completely eliminates SWAP overhead, cutting CX count back to 18 and reducing energy error by **$62.4\%$**.
+## 2. Saved results (historical run; reproduction required)
 
----
+| Platform | Qubits | Depth | CX gates | Explicit SWAP gates in saved metrics | Energy (Ha) | Error (mHa) |
+|---|---:|---:|---:|---:|---:|---:|
+| Exact reference | — | — | — | — | -1.85238817 | 0.00 |
+| Ideal VQE | 4 | 21 | 18 | 0 | -1.85196696 | 0.42 |
+| Processor A | 5 | 76 | 36 | 0 | -1.66316627 | 189.22 |
+| Processor B | 9 | 58 | 30 | 0 | -1.68683905 | 165.55 |
+| Processor D (exploratory) | 4 | 33 | 18 | 0 | -1.78124145 | 71.15 |
 
-## Repository Structure
-```text
-├── README.md               # Project overview & key results
-├── main.ipynb              # Reproducible end-to-end benchmark notebook
-├── report.md               # Comprehensive architecture co-design report
-├── requirements.txt        # Environment dependencies
-├── processors/             # Hardware coupling maps & specs (A, B, D)
-│   ├── processor_a.json
-│   ├── processor_b.json
-│   └── processor_d.json
-├── src/                    # Reusable modular codebase
-│   ├── problem.py          # H2 Hamiltonian & classical FCI solver
-│   ├── processors.py       # Topology loaders & synthetic noise models
-│   ├── routing.py          # SABRE transpilation workflows
-│   ├── metrics.py          # Circuit depth, CX count & energy metrics
-│   └── visualization.py    # Coupling maps & energy plotting routines
-└── results/                # Output datasets & generated figures
-    ├── circuit_metrics.csv
-    ├── energy_comparison.csv
-    └── figures/
-        ├── coupling_maps.png
-        └── energy_comparison.png
+These are values saved in the supplied notebook/CSV files, not a claim that the project has been rerun from a clean environment. The metrics CSV records zero *explicit* SWAP operations for A and B. Consequently, the saved evidence does not independently substantiate the older report's claims of six and four SWAPs. Routing overhead must be measured and defined consistently (for example, by comparing pre-routing and post-routing circuits or using a documented transpiler metric) before making those claims.
+
+The saved ideal VQE error is about 0.42 mHa, below the 1.6 mHa chemical-accuracy threshold, while the saved noisy A/B errors are much larger. The energy convention and reproducibility caveats above should be resolved before these numbers are treated as final scientific conclusions.
+
+## 3. Processor A/B architecture interpretation
+
+The saved Processor A circuit has depth 76 and 36 CX gates; the saved Processor B circuit has depth 58 and 30 CX gates. In this historical run, B therefore has lower reported depth and CX count than A. The noisy energy errors are 189.22 mHa for A and 165.55 mHa for B. These results are consistent with architecture and noise affecting VQE outcomes, but they do not isolate topology as the sole cause. A controlled comparison should keep the Hamiltonian, ansatz, optimizer settings, noise assumptions, shots, and energy convention consistent.
+
+The updated Phase 1 Processor B configuration uses 9 physical qubits and 8 unique undirected connections (16 directed edges): (0,1), (1,2), (2,3), (2,4), (4,5), (5,6), (4,7), and (7,8). This follows the updated challenge-kit topology. The older archived topology and its historical results are not the current Phase 1 configuration.
+
+## 4. Latest preliminary Phase 1 A/B benchmark
+
+The following results were generated by running `python -m src.h2_vqe_four_qubit` and `python -m src.noisy_ab_benchmark` in the current project environment on 17 October 2026. The Hamiltonian was reconstructed from saved notebook output, with coefficients rounded to eight decimal places; it has not been independently verified against the organizer-provided Hamiltonian.
+
+| Metric | Ideal VQE | Processor A | Processor B |
+|---|---:|---:|---:|
+| Physical qubits | 4 logical | 5 | 9 |
+| Energy (Ha) | -1.8523880622 | -1.7785568350 | -1.7955855514 |
+| Absolute error (mHa) | 0.000119 | 73.8313 | 56.8026 |
+| Circuit depth | ? | 15 | 15 |
+| CX gates | ? | 6 | 6 |
+| Explicit SWAP gates | ? | 0 | 0 |
+| Shots | ? | 4096 | 4096 |
+| Noisy optimizer evaluations | ? | 60 | 60 |
+| Chemical accuracy (1.6 mHa) | Yes | No | No |
+
+The ideal result is chemically accurate relative to the reconstructed Hamiltonian. The noisy results are preliminary and do not reach chemical accuracy. Processor B's observed error is lower than Processor A's in this run, but both transpiled circuits have the same reported depth and CX count. These results do not establish that B is universally better; optimizer convergence, noise, topology, and the chosen initial parameters can affect the outcome. Zero explicit SWAP gates does not mean all forms of routing overhead have been measured.
+
+The current benchmark uses a custom four-qubit, 16-parameter ansatz and a maximum of 60 noisy optimizer evaluations. Its settings and results should not be conflated with the historical EfficientSU2 results in Section 2. The current run is not a clean-room reproduction of the original notebook.
+
+## 5. Processor D: Proposed custom architecture and design rationale
+
+### Design motivation
+
+Our team proposes Processor D as a custom four-qubit, all-to-all-connected architecture for the H₂ VQE problem. This design explores whether improved qubit connectivity can reduce routing overhead and circuit complexity when executing the selected variational ansatz.
+
+Unlike a restricted-connectivity architecture, an all-to-all coupling map allows every pair of physical qubits to interact directly through an available two-qubit gate. The motivation is to reduce the need for additional SWAP operations when the ansatz requires interactions between nonadjacent qubits.
+
+### Proposed architecture
+
+Processor D is defined with four qubits and an all-to-all coupling topology. Its coupling map includes every pair of distinct qubits, with both directions represented in the simulation configuration. The proposal investigates the relationship between connectivity, circuit depth, two-qubit gate count, and noise exposure.
+
+### Evaluation methodology
+
+For a fair evaluation, use the same H₂ Hamiltonian, ansatz strategy, optimization settings, and energy-reference convention wherever applicable. Record VQE energy and absolute error, logical/physical qubits, transpiled CX count, depth, explicit SWAP count and routing overhead, shots, and noise assumptions. Noise assumptions should be comparable to A/B; deviations must be documented.
+
+### Expected benefits and limitations
+
+The principal expected benefit is reduced routing overhead for interactions supported directly by the all-to-all topology. This may reduce circuit depth and routing-added gates. However, all-to-all connectivity does not necessarily reduce the logical CX count, and lower depth alone does not establish a more accurate energy estimate.
+
+The saved exploratory D result is depth 33, 18 CX gates, and 71.15 mHa energy error. The D configuration uses lower noise parameters than A/B (single-qubit 0.0005, CX 0.003, readout 0.005), so this result is not a controlled topology-only comparison. The saved D value should be labelled exploratory until D is rerun under comparable noise assumptions and the same validated energy convention.
+
+### Scope
+
+Processor D is included because the team's design rationale and proposed solution are relevant to the custom-architecture evaluation. Its results are reported separately from the required A/B benchmark. The design targets a potential connectivity/routing bottleneck and should be judged on reproducible measurements rather than assumed improvements.
+
+## 6. Further directions
+
+- Re-run the notebook from a clean, documented environment and export results from that run.
+- Confirm whether the reference energy is electronic-only or includes nuclear repulsion, and compare like with like.
+- Use the same noise model for A, B, and D for a controlled topology comparison, then optionally report a separately labelled device-specific D scenario.
+- Measure routing overhead explicitly rather than inferring it from total CX counts.
+- Explore a problem-inspired ansatz, zero-noise extrapolation, readout mitigation, or symmetry verification as future work; these were not implemented in the saved Phase 1 results.
+
+## 7. Limitations
+
+Only one molecule and one bond length are represented in the saved data. The noise model is simplified and does not model device-specific correlated errors. The archived results are historical outputs and have not been verified by a clean end-to-end rerun in this packaged version. Processor D's noise assumptions differ from A/B, limiting direct comparison.
+
+## Conclusion
+
+The saved results show that ideal VQE reached a reported 0.42 mHa error, while noisy A/B simulations had much larger reported errors. Processor B's saved circuit also has lower depth and CX count than Processor A. The custom Processor D proposal explores whether all-to-all connectivity can reduce routing overhead. To make the conclusions robust, the project must validate the energy convention, regenerate metrics from a clean run, and compare architectures under consistent assumptions.
