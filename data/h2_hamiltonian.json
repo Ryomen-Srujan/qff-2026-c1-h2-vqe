@@ -1,0 +1,26 @@
+﻿{
+  "source": "Recovered from saved main.ipynb output; coefficients rounded to 8 decimal places",
+  "molecule": "H2",
+  "bond_length_angstrom": 0.74,
+  "basis": "sto3g",
+  "mapping": "Jordan-Wigner",
+  "num_qubits": 4,
+  "pauli_terms": [
+    ["IIII", -0.81217061],
+    ["IIIZ", 0.17141283],
+    ["IIZI", -0.22343154],
+    ["IIZZ", 0.12062523],
+    ["IZII", 0.17141283],
+    ["IZIZ", 0.16868898],
+    ["ZIII", -0.22343154],
+    ["ZIIZ", 0.16592785],
+    ["YYYY", 0.04530262],
+    ["XXYY", 0.04530262],
+    ["YYXX", 0.04530262],
+    ["XXXX", 0.04530262],
+    ["IZZI", 0.16592785],
+    ["ZIZI", 0.17441288],
+    ["ZZII", 0.12062523]
+  ],
+  "saved_notebook_reference_electronic_energy_hartree": -1.85238817
+}

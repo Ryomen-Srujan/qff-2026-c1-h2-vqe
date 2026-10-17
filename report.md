@@ -1,121 +1,95 @@
-﻿# Qiskit Fall Fest 2026 — C1: Molecular Ground-State Energy of H₂
+# C1: H₂ Ground-State Energy — Architecture Analysis Report
 
-## 1. Project Status
+**Team:** StrawHats
+**Problem:** C1 — Quantum Chemistry Track
+**Date:** October 2026
 
-**Status:** Provisional development experiment  
-**Problem ID:** C1  
-**Track:** Quantum Chemistry  
-**Algorithm:** Variational Quantum Eigensolver (VQE)
+## 1. Objective and method
 
-This report documents the current development prototype and preliminary architecture benchmarks. The results have not yet been validated against the official C1 Hamiltonian, reference energy, or final processor specifications. They must therefore not be interpreted as final challenge results.
+We investigate the H₂ ground-state energy near its equilibrium bond length (R = 0.74 Å) using a STO-3G model and a Variational Quantum Eigensolver (VQE). The notebook records the Hamiltonian construction, VQE ansatz, ideal baseline, processor simulations, and architecture/resource comparison.
 
-## 2. Problem Overview
+Recorded environment: Python 3.14.8, Qiskit 2.5.2, Qiskit Nature 0.8.0, Qiskit Aer 0.17.2, Qiskit Algorithms 0.4.0, and PySCF 2.14.0 (as recorded in the original run). The recorded simulation settings include an EfficientSU2 ansatz with full entanglement and 3 repetitions, COBYLA optimization, optimization level 1, SABRE layout/routing, seed 42, and 4096 shots for noisy simulations. Noise settings recorded for A/B are single-qubit depolarizing probability 0.001, CX depolarizing probability 0.005, and readout bit-flip probability 0.01.
 
-The objective of C1 is to estimate the ground-state energy of a hydrogen molecule (H₂) using the Variational Quantum Eigensolver.
+The saved notebook reports a lowest mapped-Hamiltonian eigenvalue of -1.85238817 Ha. Before treating this as the physical total molecular energy, confirm the energy convention: electronic energy and total energy including nuclear repulsion are not interchangeable. The VQE and reference values must use the same convention.
 
-VQE combines a parameterized quantum circuit with a classical optimization algorithm. The circuit prepares a trial quantum state, and the Hamiltonian expectation value estimates its energy. A classical optimizer then adjusts the circuit parameters to minimize this energy.
+## 2. Saved results (historical run; reproduction required)
 
-The quality of the result depends on the Hamiltonian, the expressiveness of the ansatz, the optimization process, and the quantum circuit resources required by the target architecture.
+| Platform | Qubits | Depth | CX gates | Explicit SWAP gates in saved metrics | Energy (Ha) | Error (mHa) |
+|---|---:|---:|---:|---:|---:|---:|
+| Exact reference | — | — | — | — | -1.85238817 | 0.00 |
+| Ideal VQE | 4 | 21 | 18 | 0 | -1.85196696 | 0.42 |
+| Processor A | 5 | 76 | 36 | 0 | -1.66316627 | 189.22 |
+| Processor B | 9 | 58 | 30 | 0 | -1.68683905 | 165.55 |
+| Processor D (exploratory) | 4 | 33 | 18 | 0 | -1.78124145 | 71.15 |
 
-## 3. Development Environment
+These are values saved in the supplied notebook/CSV files, not a claim that the project has been rerun from a clean environment. The metrics CSV records zero *explicit* SWAP operations for A and B. Consequently, the saved evidence does not independently substantiate the older report's claims of six and four SWAPs. Routing overhead must be measured and defined consistently (for example, by comparing pre-routing and post-routing circuits or using a documented transpiler metric) before making those claims.
 
-The prototype was developed and tested using the following configuration:
+The saved ideal VQE error is about 0.42 mHa, below the 1.6 mHa chemical-accuracy threshold, while the saved noisy A/B errors are much larger. The energy convention and reproducibility caveats above should be resolved before these numbers are treated as final scientific conclusions.
 
-| Component | Configuration |
-|---|---|
-| Python | 3.14.7 |
-| Qiskit | 2.5.2 |
-| Qiskit Aer | 0.17.2 |
-| Classical optimizer | COBYLA |
-| Maximum objective evaluations | 500 |
-| Transpiler optimization level | 1 |
-| Transpiler seed | 42 |
-| Simulation method | Ideal statevector |
-| Noise model | Not applied |
+## 3. Processor A/B architecture interpretation
 
-These settings describe the current development experiment and may differ from the final organizer-required benchmark configuration.
+The saved Processor A circuit has depth 76 and 36 CX gates; the saved Processor B circuit has depth 58 and 30 CX gates. In this historical run, B therefore has lower reported depth and CX count than A. The noisy energy errors are 189.22 mHa for A and 165.55 mHa for B. These results are consistent with architecture and noise affecting VQE outcomes, but they do not isolate topology as the sole cause. A controlled comparison should keep the Hamiltonian, ansatz, optimizer settings, noise assumptions, shots, and energy convention consistent.
 
-## 4. Methodology
+The updated Phase 1 Processor B configuration uses 9 physical qubits and 8 unique undirected connections (16 directed edges): (0,1), (1,2), (2,3), (2,4), (4,5), (5,6), (4,7), and (7,8). This follows the updated challenge-kit topology. The older archived topology and its historical results are not the current Phase 1 configuration.
 
-The current prototype follows these steps:
+## 4. Latest preliminary Phase 1 A/B benchmark
 
-1. Define a provisional two-qubit Hamiltonian for the development experiment.
-2. Construct a parameterized quantum circuit.
-3. Evaluate the Hamiltonian expectation value using ideal statevector simulation.
-4. Optimize the circuit parameters using COBYLA.
-5. Record the energy values during optimization to study convergence.
-6. Transpile a representative circuit against the current Processor A and Processor B coupling maps.
-7. Record circuit depth, CX gate count, and total gate count for preliminary architecture analysis.
+The following results were generated by running `python -m src.h2_vqe_four_qubit` and `python -m src.noisy_ab_benchmark` in the current project environment on 17 October 2026. The Hamiltonian was reconstructed from saved notebook output, with coefficients rounded to eight decimal places; it has not been independently verified against the organizer-provided Hamiltonian.
 
-The energy optimization and architecture smoke test are separate parts of the current workflow. The smoke test evaluates transpilation and resource metrics; it does not establish that the official H₂ problem has been solved on either processor.
+| Metric | Ideal VQE | Processor A | Processor B |
+|---|---:|---:|---:|
+| Physical qubits | 4 logical | 5 | 9 |
+| Energy (Ha) | -1.8523880622 | -1.7785568350 | -1.7955855514 |
+| Absolute error (mHa) | 0.000119 | 73.8313 | 56.8026 |
+| Circuit depth | ? | 15 | 15 |
+| CX gates | ? | 6 | 6 |
+| Explicit SWAP gates | ? | 0 | 0 |
+| Shots | ? | 4096 | 4096 |
+| Noisy optimizer evaluations | ? | 60 | 60 |
+| Chemical accuracy (1.6 mHa) | Yes | No | No |
 
-## 5. Preliminary VQE Results
+The ideal result is chemically accurate relative to the reconstructed Hamiltonian. The noisy results are preliminary and do not reach chemical accuracy. Processor B's observed error is lower than Processor A's in this run, but both transpiled circuits have the same reported depth and CX count. These results do not establish that B is universally better; optimizer convergence, noise, topology, and the chosen initial parameters can affect the outcome. Zero explicit SWAP gates does not mean all forms of routing overhead have been measured.
 
-- Final VQE energy: -1.8572731802 Hartree
-- Exact matrix ground energy: -1.8572750302 Hartree
-- Absolute energy error: 0.0000018500 Hartree
-- Optimizer success: True
-- Optimizer evaluations: 1201
-- Maximum allowed evaluations: 2000
-- Optimizer termination: Trust-region radius reached its lower bound
-### Interpretation
+The current benchmark uses a custom four-qubit, 16-parameter ansatz and a maximum of 60 noisy optimizer evaluations. Its settings and results should not be conflated with the historical EfficientSU2 results in Section 2. The current run is not a clean-room reproduction of the original notebook.
 
-The reported final energy is lower than the initial energy, indicating that the optimization process reduced the objective value during the experiment.
+## 5. Processor D: Proposed custom architecture and design rationale
 
-The small variation across the final ten evaluations suggests that the objective values had stabilized near the end of the run. However, this alone does not establish that the optimizer found the global minimum or that the energy is physically correct for the official H₂ instance.
+### Design motivation
 
-The reported absolute energy error depends on the reference value used by the script. Since the official Hamiltonian and reference energy have not yet been verified, this error must be treated as provisional rather than as a validated accuracy result.
+Our team proposes Processor D as a custom four-qubit, all-to-all-connected architecture for the H₂ VQE problem. This design explores whether improved qubit connectivity can reduce routing overhead and circuit complexity when executing the selected variational ansatz.
 
-The optimizer used the maximum configured number of objective evaluations. Further validation is required to determine whether the optimization converged adequately.
+Unlike a restricted-connectivity architecture, an all-to-all coupling map allows every pair of physical qubits to interact directly through an available two-qubit gate. The motivation is to reduce the need for additional SWAP operations when the ansatz requires interactions between nonadjacent qubits.
 
-## 6. Preliminary Processor A and Processor B Comparison
+### Proposed architecture
 
-The current two-qubit circuit produced the following transpilation metrics:
+Processor D is defined with four qubits and an all-to-all coupling topology. Its coupling map includes every pair of distinct qubits, with both directions represented in the simulation configuration. The proposal investigates the relationship between connectivity, circuit depth, two-qubit gate count, and noise exposure.
 
-| Metric | Processor A | Processor B |
-|---|---:|---:|
-| Physical qubits available | 5 | 9 |
-| Logical qubits in circuit | 2 | 2 |
-| Circuit depth | 10 | 10 |
-| CX gates | 2 | 2 |
-| Total gates | 18 | 18 |
+### Evaluation methodology
 
-### Interpretation
+For a fair evaluation, use the same H₂ Hamiltonian, ansatz strategy, optimization settings, and energy-reference convention wherever applicable. Record VQE energy and absolute error, logical/physical qubits, transpiled CX count, depth, explicit SWAP count and routing overhead, shots, and noise assumptions. Noise assumptions should be comparable to A/B; deviations must be documented.
 
-The current circuit produced identical reported resource metrics on both processor configurations. This is consistent with a small circuit whose existing two-qubit interactions do not require additional routing under the tested configurations.
+### Expected benefits and limitations
 
-However, these results do not demonstrate that the architectures are equivalent in general. A larger circuit, a different qubit layout, or more restrictive connectivity could produce different transpilation results.
+The principal expected benefit is reduced routing overhead for interactions supported directly by the all-to-all topology. This may reduce circuit depth and routing-added gates. However, all-to-all connectivity does not necessarily reduce the logical CX count, and lower depth alone does not establish a more accurate energy estimate.
 
-No explicit SWAP gates were reported in these current metrics. This does not, by itself, establish the absence of all routing overhead under every layout or transpilation configuration.
+The saved exploratory D result is depth 33, 18 CX gates, and 71.15 mHa energy error. The D configuration uses lower noise parameters than A/B (single-qubit 0.0005, CX 0.003, readout 0.005), so this result is not a controlled topology-only comparison. The saved D value should be labelled exploratory until D is rerun under comparable noise assumptions and the same validated energy convention.
 
-The processor definitions used in this experiment remain provisional. A valid final comparison requires the authoritative coupling maps and the same documented benchmark settings on both architectures.
+### Scope
 
-## 7. Simulation Limitations
+Processor D is included because the team's design rationale and proposed solution are relevant to the custom-architecture evaluation. Its results are reported separately from the required A/B benchmark. The design targets a potential connectivity/routing bottleneck and should be judged on reproducible measurements rather than assumed improvements.
 
-The current VQE calculation uses ideal statevector simulation. No gate noise, measurement noise, or finite-shot sampling was applied.
+## 6. Further directions
 
-Consequently, the current results do not measure the effect of hardware noise, statistical measurement uncertainty, or noisy execution on energy accuracy.
+- Re-run the notebook from a clean, documented environment and export results from that run.
+- Confirm whether the reference energy is electronic-only or includes nuclear repulsion, and compare like with like.
+- Use the same noise model for A, B, and D for a controlled topology comparison, then optionally report a separately labelled device-specific D scenario.
+- Measure routing overhead explicitly rather than inferring it from total CX counts.
+- Explore a problem-inspired ansatz, zero-noise extrapolation, readout mitigation, or symmetry verification as future work; these were not implemented in the saved Phase 1 results.
 
-The architecture comparison is also preliminary because it uses a small development circuit and has not yet been validated against the final processor specifications.
+## 7. Limitations
 
-## 8. Outstanding Work
+Only one molecule and one bond length are represented in the saved data. The noise model is simplified and does not model device-specific correlated errors. The archived results are historical outputs and have not been verified by a clean end-to-end rerun in this packaged version. Processor D's noise assumptions differ from A/B, limiting direct comparison.
 
-The following tasks remain before the experiment can be considered a final C1 submission:
+## Conclusion
 
-1. Confirm the official H₂ Hamiltonian and reference energy.
-2. Validate the Hamiltonian representation and ansatz for the selected instance.
-3. Confirm the authoritative Processor A and Processor B coupling maps.
-4. Apply the required transpilation, layout, routing, and seed settings.
-5. Implement the specified noise model and shot count if required by the final benchmark instructions.
-6. Re-run VQE and architecture benchmarks using the confirmed specifications.
-7. Compare the resulting energy against a valid exact or classical reference.
-8. Export the final convergence plot, resource tables, and coupling-map visualizations.
-9. Prepare the required notebook and ensure that all results can be reproduced from the documented environment.
-
-## 9. Conclusion
-
-The current project contains a working VQE development prototype and preliminary processor transpilation benchmarks. The optimization reduced the reported energy from its initial value, while the tested two-qubit circuit produced identical resource metrics on the two current processor configurations.
-
-These findings are useful for validating the development workflow, but they are not yet sufficient to establish the accuracy of the official H₂ ground-state energy calculation or a meaningful performance advantage for either processor.
-
-The next stage is to verify the official problem and processor definitions, execute the required experiments, and replace the provisional measurements with validated results.
+The saved results show that ideal VQE reached a reported 0.42 mHa error, while noisy A/B simulations had much larger reported errors. Processor B's saved circuit also has lower depth and CX count than Processor A. The custom Processor D proposal explores whether all-to-all connectivity can reduce routing overhead. To make the conclusions robust, the project must validate the energy convention, regenerate metrics from a clean run, and compare architectures under consistent assumptions.

@@ -118,7 +118,7 @@ def main():
     logical_circuit = make_ansatz(result.x)
     architecture_rows = []
 
-    for filename in ["processor_A.json", "processor_B.json"]:
+    for filename in ["processor_a.json", "processor_b.json"]:
         config = load_processor(filename)
 
         directed_edges = []
