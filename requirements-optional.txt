@@ -1,0 +1,5 @@
+# OPTIONAL - only if you want to build ansatze (e.g. UCCSD) or re-derive operators yourself.
+# Not needed for any required task: all operators and integrals are in data/.
+# pyscf has no Windows wheels; use Linux, macOS or WSL.
+qiskit-nature==0.7.2
+pyscf==2.14.0

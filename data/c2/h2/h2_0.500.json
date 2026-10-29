@@ -1,0 +1,85 @@
+{
+ "meta": {
+  "name": "H2 R=0.5",
+  "atom": "H 0 0 0\nH 0 0 0.5",
+  "basis": "sto3g",
+  "charge": 0,
+  "spin": 0,
+  "active_orbitals": [
+   0,
+   1
+  ],
+  "active_electrons": 2,
+  "n_spatial_orbitals_full": 2,
+  "n_electrons_full": 2,
+  "hf_bitstring": "0101",
+  "jw_qubits": 4,
+  "constant_hartree": 1.05835442184,
+  "e_hf_hartree": -1.042996274540095,
+  "e_fci_full_space_hartree": -1.0551597944706248,
+  "mapping": "Jordan-Wigner, qiskit-nature block order: qubits 0..n-1 = alpha orbitals, n..2n-1 = beta orbitals",
+  "energy_convention": "E_total = <psi|H_qubit|psi> + constant_hartree (Hartree)"
+ },
+ "operator_jw": [
+  [
+   "IIII",
+   -0.6785230700590477
+  ],
+  [
+   "IIIZ",
+   0.21393531024521362
+  ],
+  [
+   "IIZI",
+   -0.36914431524376495
+  ],
+  [
+   "IIZZ",
+   0.1345924034636881
+  ],
+  [
+   "IZII",
+   0.2139353102452135
+  ],
+  [
+   "IZIZ",
+   0.17992650976405958
+  ],
+  [
+   "ZIII",
+   -0.36914431524376506
+  ],
+  [
+   "ZIIZ",
+   0.1768099603861219
+  ],
+  [
+   "YYYY",
+   0.04221755692243381
+  ],
+  [
+   "XXYY",
+   0.04221755692243381
+  ],
+  [
+   "YYXX",
+   0.04221755692243381
+  ],
+  [
+   "XXXX",
+   0.04221755692243381
+  ],
+  [
+   "IZZI",
+   0.1768099603861219
+  ],
+  [
+   "ZIZI",
+   0.186209842592471
+  ],
+  [
+   "ZZII",
+   0.1345924034636881
+  ]
+ ]
+}

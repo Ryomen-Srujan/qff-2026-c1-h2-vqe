@@ -1,0 +1,9 @@
+﻿{
+  "event": "Qiskit Fall Fest 2026",
+  "phase": 1,
+  "problem_code": "C1",
+  "problem_name": "Molecular Ground-State Energy (H2)",
+  "track": "Quantum Chemistry",
+  "algorithm": "VQE",
+  "status": "team_choice_selected"
+}

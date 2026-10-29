@@ -1,0 +1,3 @@
+Processor,Physical_Qubits,Logical_Qubits,Energy_Ha,Exact_Electronic_Energy_Ha,Error_mHa,Chemical_Accuracy_1_6mHa,Depth,CX,Explicit_SWAP,Shots,Optimizer_Evaluations,Noise_1Q,Noise_CX,Readout_Bitflip
+Processor_A,5,4,-1.7785568350390626,-1.8523881807778975,73.83134573883487,False,15,6,0,4096,60,0.001,0.005,0.01
+Processor_B,9,4,-1.7955855514208985,-1.8523881807778975,56.80262935699898,False,15,6,0,4096,60,0.001,0.005,0.01

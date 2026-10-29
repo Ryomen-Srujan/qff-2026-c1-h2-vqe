@@ -1,0 +1,3 @@
+processor,physical_qubits,logical_qubits,coupling_edges,depth,total_gates,cx_count,explicit_swap_count,transpiled_operations
+Processor_A,5,4,8,10,22,8,0,"{'rz': 8, 'cx': 8, 'sx': 6}"
+Processor_B,9,4,16,11,21,7,0,"{'rz': 8, 'cx': 7, 'sx': 6}"

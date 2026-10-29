@@ -1,0 +1,3 @@
+processor,physical_qubits,logical_qubits,depth,total_gates,cx_count,explicit_swap_count,ideal_vqe_energy_hartree,energy_error_hartree,noise_model,status
+Processor_A,5,2,10,18,2,0,-1.8572731802174893,1.849984890167633e-06,not applied,provisional development test
+Processor_B,9,2,10,18,2,0,-1.8572731802174893,1.849984890167633e-06,not applied,provisional development test

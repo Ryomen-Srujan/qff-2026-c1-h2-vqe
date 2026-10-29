@@ -1,5 +1,10 @@
-.venv/
+﻿.venv/
 .venv*/
+chem-env/
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints/
 .env
+
+main.ipynb.backup
+starter/starter_chem.local-backup.ipynb
