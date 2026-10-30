@@ -1,358 +1,357 @@
-﻿# \# QFF 2026 Phase 2 â€” Quantum Chemistry Challenge Kit
+# QFF 2026 Phase 2 — Quantum Chemistry Challenge Kit
 
-# \## PS-C1: Hâ‚‚ Ground-State Energy â€” Hybrid Integration
+## PS-C1: H₂ Ground-State Energy — Hybrid Integration
 
-#
 
-# Read \*\*QFF2026\_Phase2\_Chemistry\_Problem\_Statements.docx\*\* first. It is the authoritative description of every task, rule, definition, and deadline. This kit holds every input it refers to; nothing else needs to be downloaded or requested.
 
-#
+Read **QFF2026_Phase2_Chemistry_Problem_Statements.docx** first. It is the authoritative description of every task, rule, definition, and deadline. This kit holds every input it refers to; nothing else needs to be downloaded or requested.
 
-# | When (IST) | What |
 
-# |---|---|
 
-# | Day 1, 6:00 PM | Hackathon starts (help desk for clarifications 6:00â€“8:00 PM) |
+| When (IST) | What |
 
-# | \*\*Day 2, 5:40 PM\*\* | \*\*Final commit; repository URL submitted on the hackathon portal\*\* (https://qffsrmap2026.com/learning/hackathon) |
+|---|---|
 
-#
+| Day 1, 6:00 PM | Hackathon starts (help desk for clarifications 6:00–8:00 PM) |
 
-# \## 1. Official Challenge Kit
+| **Day 2, 5:40 PM** | **Final commit; repository URL submitted on the hackathon portal** (https://qffsrmap2026.com/learning/hackathon) |
 
-#
 
-# \### Setup
 
-#
+## 1. Official Challenge Kit
 
-# ```bash
 
-# python3 -m venv chem-env \&\& source chem-env/bin/activate
 
-# pip install --upgrade pip \&\& pip install -r requirements.txt
+### Setup
 
-# cd starter \&\& jupyter notebook starter\_chem.ipynb
 
-# ```
 
-#
+```bash
 
-# Use Python 3.11, 3.12, or 3.13.
+python3 -m venv chem-env \&\& source chem-env/bin/activate
 
-#
+pip install --upgrade pip \&\& pip install -r requirements.txt
 
-# `requirements-optional.txt` (qiskit-nature, pyscf) is only needed if you want Qiskit Nature ansÃ¤tze such as UCCSD or want to re-derive operators. PySCF has no Windows wheels (use WSL).
+cd starter \&\& jupyter notebook starter_chem.ipynb
 
-#
+```
 
-# \### Challenge Kit Contents
 
-#
 
-# | Path | What it is |
+Use Python 3.11, 3.12, or 3.13.
 
-# |---|---|
 
-# | `data/instances\_index.json` | Every locked value: grids, active spaces, fit windows, reduced masses, constants, processors, settings |
 
-# | `data/c1/` | PS-C1: Hâ‚‚ at R = 0.735 Ã… â€” 4-qubit Jordanâ€“Wigner operator (`.json`) and integrals (`.npz`) |
+`requirements-optional.txt` (qiskit-nature, pyscf) is only needed if you want Qiskit Nature ansätze such as UCCSD or want to re-derive operators. PySCF has no Windows wheels (use WSL).
 
-# | `data/c2/h2/` | PS-C2: Hâ‚‚ at 12 bond lengths from 0.50â€“3.00 Ã… (operator and integrals for each) |
 
-# | `data/c2/lih/` | PS-C2 advanced tier: LiH at 12 bond lengths from 1.00â€“4.00 Ã… â€” 6-qubit active-space operator and 4-qubit tapered operator |
 
-# | `data/c3/` | PS-C3: Hâ‚‚O (4e,4o) â€” 8-qubit active-space operator and integrals |
+### Challenge Kit Contents
 
-# | `starter/qff\_chem.py` | Official settings, Processors A/B, noise model, resource metrics, Bell experiment, Processor D checker, energy estimators, SPSA, and PES helpers |
 
-# | `starter/starter\_chem.ipynb` | Worked example of the measurement workflow |
 
-# | `starter/processor\_D\_template.json` | Processor D file format |
+| Path | What it is |
 
-# | `tools/check\_processor\_d.py` | Processor D validation script |
+|---|---|
 
-# | `templates/results\_columns.md` | Required result tables (CSV names and columns) |
+| `data/instances_index.json` | Every locked value: grids, active spaces, fit windows, reduced masses, constants, processors, settings |
 
-# | `MANIFEST.sha256` | Checksums of every file |
+| `data/c1/` | PS-C1: H₂ at R = 0.735 Å — 4-qubit Jordan–Wigner operator (`.json`) and integrals (`.npz`) |
 
-#
+| `data/c2/h2/` | PS-C2: H₂ at 12 bond lengths from 0.50–3.00 Å (operator and integrals for each) |
 
-# Each operator `.json` has `meta` (geometry, active space, HF bitstring, `constant\_hartree`, `e\_hf\_hartree`, `e\_fci\_full\_space\_hartree`) and `operator\_jw` as `\[pauli\_label, coefficient]` pairs.
+| `data/c2/lih/` | PS-C2 advanced tier: LiH at 12 bond lengths from 1.00–4.00 Å — 6-qubit active-space operator and 4-qubit tapered operator |
 
-#
+| `data/c3/` | PS-C3: H₂O (4e,4o) — 8-qubit active-space operator and integrals |
 
-# \*\*Total energy:\*\*
+| `starter/qff_chem.py` | Official settings, Processors A/B, noise model, resource metrics, Bell experiment, Processor D checker, energy estimators, SPSA, and PES helpers |
 
-#
+| `starter/starter_chem.ipynb` | Worked example of the measurement workflow |
 
-# \\\[
+| `starter/processor_D_template.json` | Processor D file format |
 
-# E\_{\\mathrm{total}}=\\langle\\psi|H|\\psi\\rangle+\\text{constant\\\_hartree}
+| `tools/check_processor_d.py` | Processor D validation script |
 
-# \\]
+| `templates/results_columns.md` | Required result tables (CSV names and columns) |
 
-#
+| `MANIFEST.sha256` | Checksums of every file |
 
-# Spin-orbital order: qubits 0â€¦nâˆ’1 are Î± orbitals, and nâ€¦2nâˆ’1 are Î² orbitals (Qiskit Nature block order). Integrals `.npz`: `h1`, `h2\_chemist` (chemists' notation (pq|rs)), `e\_core`, `n\_alpha`, `n\_beta`.
 
-#
 
-# Answer keys are \*\*not\*\* in this kit.
+Each operator `.json` has `meta` (geometry, active space, HF bitstring, `constant_hartree`, `e_hf_hartree`, `e_fci_full_space_hartree`) and `operator_jw` as `\[pauli_label, coefficient]` pairs.
 
-#
 
-# \---
 
-#
+**Total energy:**
 
-# \# 2. PS-C1 Project Overview
 
-#
 
-# This project implements and evaluates a hybrid quantum workflow for estimating the ground-state energy of molecular hydrogen (Hâ‚‚) at a bond length of \*\*0.735 Ã…\*\* using the \*\*STO-3G\*\* basis.
+\\\[
 
-#
+E_{\\mathrm{total}}=\\langle\\psi|H|\\psi\\rangle+\\text{constant\\_hartree}
 
-# The exact Full Configuration Interaction (FCI) reference energy used in the integrated analysis is:
+\\]
 
-#
 
-# `-1.1373060357534004 Ha`
 
-#
+Spin-orbital order: qubits 0…n−1 are α orbitals, and n…2n−1 are β orbitals (Qiskit Nature block order). Integrals `.npz`: `h1`, `h2_chemist` (chemists' notation (pq|rs)), `e_core`, `n_alpha`, `n_beta`.
 
-# The workflow includes:
 
-#
 
-# \- Fermion-to-qubit mapping
+Answer keys are **not** in this kit.
 
-# \- Symmetry reduction and two-qubit tapering
 
-# \- Variational Quantum Eigensolver (VQE) optimization
 
-# \- Finite-shot energy estimation
+---
 
-# \- Bell-pair diagnostics
 
-# \- Circuit-resource analysis
 
-#
+# 2. PS-C1 Project Overview
 
-# \## 3. Repository Contents
 
-#
 
-# | Path | What it is |
+This project implements and evaluates a hybrid quantum workflow for estimating the ground-state energy of molecular hydrogen (H₂) at a bond length of **0.735 Å** using the **STO-3G** basis.
 
-# |---|---|
 
-# | `c1/` | C1 modules for reduction, setup, VQE sweeps, shot studies, Bell experiments, and resource analysis |
 
-# | `c1\_pipeline.ipynb` | Integrated C1 analysis notebook |
+The exact Full Configuration Interaction (FCI) reference energy used in the integrated analysis is:
 
-# | `tests/test\_reduction.py` | Symmetry-reduction validation tests |
 
-# | `processors/processor\_D.json` | Processor D topology and noise configuration |
 
-# | `results/tables/` | Mapping, sweep, shot, Bell, and resource result tables |
+`-1.1373060357534004 Ha`
 
-# | `results/figures/` | Generated convergence figures |
 
-# | `results/best\_run\_c1.json` | Selected integrated VQE configuration and parameter vector |
 
-# | `archive/member3\_reference/` | Preserved Member 3 scripts, original report, and historical outputs |
+The workflow includes:
 
-#
 
-# The original starter assets and Phase 1 notebook are retained separately. The archived Member 3 report is preserved unchanged.
 
-#
+- Fermion-to-qubit mapping
 
-# \## 4. Environment and Reproduction
+- Symmetry reduction and two-qubit tapering
 
-#
+- Variational Quantum Eigensolver (VQE) optimization
 
-# Run the following commands from the repository root using the configured Python environment:
+- Finite-shot energy estimation
 
-#
+- Bell-pair diagnostics
 
-# ```powershell
+- Circuit-resource analysis
 
-# python -m pytest tests -q
 
-# python tools/check\_processor\_d.py processors/processor\_D.json 4
 
-# python -m jupyter nbconvert --to notebook --execute c1\_pipeline.ipynb --output c1\_pipeline\_executed.ipynb
+## 3. Repository Contents
 
-# ```
 
-#
 
-# \### Recorded Validation Outcomes
+| Path | What it is |
 
-#
+|---|---|
 
-# \- Pytest: \*\*2 passed\*\*.
+| `c1/` | C1 modules for reduction, setup, VQE sweeps, shot studies, Bell experiments, and resource analysis |
 
-# \- Processor D structural check: \*\*OK â€” Processor D satisfies all design rules\*\*.
+| `c1_pipeline.ipynb` | Integrated C1 analysis notebook |
 
-# \- Integrated notebook: executed without cell errors and saved as a separate executed notebook.
+| `tests/test_reduction.py` | Symmetry-reduction validation tests |
 
-#
+| `processors/processor_D.json` | Processor D topology and noise configuration |
 
-# The notebook execution command creates `c1\_pipeline\_executed.ipynb`; it does not overwrite the original source notebook.
+| `results/tables/` | Mapping, sweep, shot, Bell, and resource result tables |
 
-#
+| `results/figures/` | Generated convergence figures |
 
-# \## 5. Mapping and Symmetry Reduction
+| `results/best_run_c1.json` | Selected integrated VQE configuration and parameter vector |
 
-#
+| `archive/member3_reference/` | Preserved Member 3 scripts, original report, and historical outputs |
 
-# | Representation | Qubits | Non-identity Pauli terms | QWC groups | CX gates on Processor D |
 
-# |---|---:|---:|---:|---:|
 
-# | Jordanâ€“Wigner (JW-4q) | 4 | 14 | 5 | 3 |
+The original starter assets and Phase 1 notebook are retained separately. The archived Member 3 report is preserved unchanged.
 
-# | Symmetry-tapered (tapered-2q) | 2 | 4 | 2 | 1 |
 
-#
 
-# Both representations reproduce the FCI reference energy in the integrated mapping results.
+## 4. Environment and Reproduction
 
-#
 
-# The tapered representation reduces the problem to two qubits while reducing the number of non-identity Pauli terms and qubit-wise commuting (QWC) measurement groups.
 
-#
+Run the following commands from the repository root using the configured Python environment:
 
-# \## 6. Integrated Hybrid VQE Sweep
 
-#
 
-# The integrated sweep contains 12 configurations:
+```powershell
 
-#
+python -m pytest tests -q
 
-# \- Hardware-efficient ansatz depths 1 and 2.
+python tools/check_processor_d.py processors/processor_D.json 4
 
-# \- COBYLA and SPSA optimizers.
+python -m jupyter nbconvert --to notebook --execute c1_pipeline.ipynb --output c1_pipeline_executed.ipynb
 
-# \- Seeds 0, 1, and 2.
+```
 
-#
 
-# \### Best Integrated Result
 
-#
+### Recorded Validation Outcomes
 
-# | Parameter | Result |
 
-# |---|---:|
 
-# | Mapping | tapered-2q |
+- Pytest: **2 passed**.
 
-# | Ansatz depth | 2 |
+- Processor D structural check: **OK — Processor D satisfies all design rules**.
 
-# | Optimizer | COBYLA |
+- Integrated notebook: executed without cell errors and saved as a separate executed notebook.
 
-# | Seed | 1 |
 
-# | Energy | -1.137306035656347 Ha |
 
-# | Absolute error | 9.705347636668193 Ã— 10â»â¸ Ha |
+The notebook execution command creates `c1_pipeline_executed.ipynb`; it does not overwrite the original source notebook.
 
-# | Optimizer calls | 61 |
 
-#
 
-# The complete sweep is stored in `results/tables/c1\_sweep.csv`.
+## 5. Mapping and Symmetry Reduction
 
-#
 
-# The selected configuration and parameter vector are stored in `results/best\_run\_c1.json`.
 
-#
+| Representation | Qubits | Non-identity Pauli terms | QWC groups | CX gates on Processor D |
 
-# The additional JW-4q sweep is recorded separately in `results/tables/c1\_sweep\_extra\_JW4q.csv`.
+|---|---:|---:|---:|---:|
 
-#
+| Jordan–Wigner (JW-4q) | 4 | 14 | 5 | 3 |
 
-# \## 7. Member 3 Independent Depth-1 Reproduction
+| Symmetry-tapered (tapered-2q) | 2 | 4 | 2 | 1 |
 
-#
 
-# The preserved Member 3 `run\_best\_params.py` was independently executed.
 
-#
+Both representations reproduce the FCI reference energy in the integrated mapping results.
 
-# It uses:
 
-#
 
-# \- Parity mapping with two-qubit tapering.
+The tapered representation reduces the problem to two qubits while reducing the number of non-identity Pauli terms and qubit-wise commuting (QWC) measurement groups.
 
-# \- Two-qubit hardware-efficient ansatz with one repetition.
 
-# \- Hartreeâ€“Fock initial state.
 
-# \- COBYLA optimizer.
+## 6. Integrated Hybrid VQE Sweep
 
-# \- Seed 0.
 
-#
 
-# \### Recorded Result
+The integrated sweep contains 12 configurations:
 
-#
 
-# | Quantity | Value |
 
-# |---|---:|
+- Hardware-efficient ansatz depths 1 and 2.
 
-# | VQE energy | -1.1373060357533036 Ha |
+- COBYLA and SPSA optimizers.
 
-# | FCI reference | -1.1373060357534004 Ha |
+- Seeds 0, 1, and 2.
 
-# | Optimizer calls | 99 |
 
-# | Ansatz depth | 1 |
 
-# | Number of parameters | 4 |
+### Best Integrated Result
 
-#
 
-# This is a separate depth-1 experiment, not the integrated depth-2 best run.
 
-#
+| Parameter | Result |
 
-# The four parameters from this experiment must not be used with the integrated depth-2 ansatz, which has six parameters.
+|---|---:|
 
-#
+| Mapping | tapered-2q |
 
-# \## 8. Finite-Shot Energy Estimates
+| Ansatz depth | 2 |
 
-#
+| Optimizer | COBYLA |
 
-# The current integrated shot results are stored in `results/tables/c1\_shots.csv`.
+| Seed | 1 |
 
-#
+| Energy | -1.137306035656347 Ha |
 
-# There are two QWC measurement groups, so total circuit shots equal twice the shots-per-group value.
+| Absolute error | 9.705347636668193 × 10⁻⁸ Ha |
 
-#
+| Optimizer calls | 61 |
 
-# | Noise setting | Shots per group | Energy (Ha) | Standard error (Ha) | Signed error (mHa) |
 
-# |---|---:|---:|---:|---:|
 
-# | Ideal | 1,024 | -1.1412479014 | 0.00823015 | -3.9419 |
+The complete sweep is stored in `results/tables/c1_sweep.csv`.
 
-# | Ideal | 8,192 | -1.1423153592 | 0.00273532 | -5.0093 |
 
-# | Processor D noise model | 1,024 | -1.1111502474 | 0.00948116 | +26.1558 |
 
-# | Processor D noise model
+The selected configuration and parameter vector are stored in `results/best_run_c1.json`.
 
+
+
+The additional JW-4q sweep is recorded separately in `results/tables/c1_sweep_extra_JW4q.csv`.
+
+
+
+## 7. Member 3 Independent Depth-1 Reproduction
+
+
+
+The preserved Member 3 `run_best_params.py` was independently executed.
+
+
+
+It uses:
+
+
+
+- Parity mapping with two-qubit tapering.
+
+- Two-qubit hardware-efficient ansatz with one repetition.
+
+- Hartree–Fock initial state.
+
+- COBYLA optimizer.
+
+- Seed 0.
+
+
+
+### Recorded Result
+
+
+
+| Quantity | Value |
+
+|---|---:|
+
+| VQE energy | -1.1373060357533036 Ha |
+
+| FCI reference | -1.1373060357534004 Ha |
+
+| Optimizer calls | 99 |
+
+| Ansatz depth | 1 |
+
+| Number of parameters | 4 |
+
+
+
+This is a separate depth-1 experiment, not the integrated depth-2 best run.
+
+
+
+The four parameters from this experiment must not be used with the integrated depth-2 ansatz, which has six parameters.
+
+
+
+## 8. Finite-Shot Energy Estimates
+
+
+
+The current integrated shot results are stored in `results/tables/c1_shots.csv`.
+
+
+
+There are two QWC measurement groups, so total circuit shots equal twice the shots-per-group value.
+
+
+
+| Noise setting | Shots per group | Energy (Ha) | Standard error (Ha) | Signed error (mHa) |
+
+|---|---:|---:|---:|---:|
+
+| Ideal | 1,024 | -1.1412479014 | 0.00823015 | -3.9419 |
+
+| Ideal | 8,192 | -1.1423153592 | 0.00273532 | -5.0093 |
+
+| Processor D noise model | 1,024 | -1.1111502474 | 0.00948116 | +26.1558 |
+
+| Processor D noise model
