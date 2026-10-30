@@ -1,10 +1,40 @@
 {
-    "name": "Processor D",
-    "team": "Straw Hats",
-    "problem_statement": "PS-C1",
-    "num_qubits": 4,
-    "edges": [[0, 1],[1, 2],[2, 3],[3, 0],[0, 2]],
-    "basis_gates": ["rz","sx","x","cx"],
-    "error_rates": {"p1": 0.001,"p2": 0.005,"p_readout": 0.01},
-    "justification": "Archived Phase 1 measurements reported that Processor B sometimes used fewer two-qubit gates and lower depth than Processor A, although other preliminary runs showed equal depth and CX counts and zero explicit SWAPs. This four-qubit diamond directly supports a linear H2 entangling chain, adds alternate routes without full connectivity, keeps maximum degree three, and preserves a distance-two pair for the Bell experiment. The extra edge may reduce routing exposure, while fewer couplers than a complete graph limits connectivity and calibration complexity; fresh official benchmarks are still required."
-  }
+  "name": "Processor D",
+  "team": "Straw Hats",
+  "problem_statement": "PS-C1",
+  "num_qubits": 4,
+  "edges": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      3,
+      0
+    ],
+    [
+      0,
+      2
+    ]
+  ],
+  "basis_gates": [
+    "rz",
+    "sx",
+    "x",
+    "cx"
+  ],
+  "error_rates": {
+    "p1": 0.001,
+    "p2": 0.005,
+    "p_readout": 0.01
+  },
+  "justification": "Measured with the official transpilation, the JW-4q and tapered-2q hardware-efficient circuits needed zero SWAPs and the same CX count on Processors A, B and D (JW-4q depth 1: 3 CX; tapered-2q depth 1: 1 CX), because their linear CZ chain embeds in all three graphs. For this ansatz the bottleneck is therefore CX count and circuit depth, not routing, and the 4-to-2 qubit reduction cut CX from 3 to 1. D keeps the chain (edges 0-1, 1-2, 2-3) so chemistry circuits pay nothing, and adds edges 3-0 and 0-2 so that every pair except 1-3 is directly coupled and the farthest pair is two hops instead of three; on a plain 4-qubit line the far-pair Bell circuit cost 7 CX in our test. Error rates equal the official 0.001, 0.005 and 0.01 because the rules forbid better values. The trade-off is two extra couplers, with calibration and crosstalk costs the noise model ignores, for no gain on the required chemistry circuits."
+}

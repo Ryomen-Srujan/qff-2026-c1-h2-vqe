@@ -1,0 +1,13 @@
+operator,ansatz,depth,optimizer,seed,energy,error_mha,optimizer_calls,cx_on_D,depth_on_D
+tapered-2q,hardware_efficient,1,COBYLA,0,-1.1373060351727897,5.80610670652959e-07,68,1,9
+tapered-2q,hardware_efficient,1,COBYLA,1,-1.1373060352504876,5.029128224975921e-07,59,1,9
+tapered-2q,hardware_efficient,1,COBYLA,2,-1.1373060343212327,1.4321677177520087e-06,64,1,9
+tapered-2q,hardware_efficient,1,SPSA,0,-1.1373060051474462,3.060595421544576e-05,651,1,9
+tapered-2q,hardware_efficient,1,SPSA,1,-1.1373058649561263,0.0001707972741016306,651,1,9
+tapered-2q,hardware_efficient,1,SPSA,2,-1.1373059505653407,8.518805971746701e-05,651,1,9
+tapered-2q,hardware_efficient,2,COBYLA,0,-1.1373060350573034,6.960969578528875e-07,78,2,14
+tapered-2q,hardware_efficient,2,COBYLA,1,-1.137306035656347,9.705347636668193e-08,61,2,14
+tapered-2q,hardware_efficient,2,COBYLA,2,-1.1373060345516257,1.201774679771006e-06,71,2,14
+tapered-2q,hardware_efficient,2,SPSA,0,-1.1373057795192052,0.00025623419519504864,651,2,14
+tapered-2q,hardware_efficient,2,SPSA,1,-1.1373055698970078,0.00046585639257301636,651,2,14
+tapered-2q,hardware_efficient,2,SPSA,2,-1.1373060319263506,3.827049788185377e-06,651,2,14
