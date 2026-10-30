@@ -1,0 +1,9 @@
+Use of AI Tools
+
+During this project, our team used an AI assistant as a supplementary learning and clarification tool, particularly while working on the Bell-state experiment.
+
+We had questions regarding the Bell-state circuit, the interpretation of two-qubit correlation measurements (XX, YY, and ZZ), and the calculation and interpretation of Bell-state fidelity. We consulted an AI assistant to clarify these concepts and help us understand the experimental procedure and simulation outputs.
+
+The AI assistant was used for conceptual guidance and troubleshooting. The Bell-state simulations were executed by our team in the project environment, and the reported numerical results were obtained from our generated result files. We reviewed the outputs and take responsibility for the implementation, validation, interpretation, and conclusions presented in this report and at the end we used AI to optimize the report and README_C1.
+
+We acknowledge the use of AI assistance rather than presenting that assistance as independent work or experimental evidence.
